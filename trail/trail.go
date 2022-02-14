@@ -166,6 +166,7 @@ func WalkEvents(sess *session.Session, dsn string, opt Option, fn WalkEventsFunc
 				r := v.(*Record)
 				err = fn(r)
 				if err != nil {
+					log.Debug().Err(err)
 					return false
 				}
 				return true
@@ -181,6 +182,7 @@ func WalkEvents(sess *session.Session, dsn string, opt Option, fn WalkEventsFunc
 		r := v.(*Record)
 		err = fn(r)
 		if err != nil {
+			log.Debug().Err(err)
 			return false
 		}
 		return true
@@ -290,17 +292,17 @@ func generatePrefixes(sess *session.Session, dsn string, opt Option, after1Day b
 func datePaths(in string, after1Day bool) ([]string, error) {
 	splitted := strings.Split(in, "/")
 	if len(splitted) > 3 || splitted[0] == "" {
-		return []string{}, fmt.Errorf("invalid date format", in)
+		return []string{}, fmt.Errorf("invalid date format: %s", in)
 	}
 	year, err := strconv.Atoi(splitted[0])
 	if err != nil {
-		return []string{}, fmt.Errorf("invalid date format", in)
+		return []string{}, fmt.Errorf("invalid date format: %s", in)
 	}
 	months := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 	if len(splitted) >= 2 {
 		month, err := strconv.Atoi(splitted[1])
 		if err != nil {
-			return []string{}, fmt.Errorf("invalid date format", in)
+			return []string{}, fmt.Errorf("invalid date format: %s", in)
 		}
 		months = []int{month}
 	}
@@ -310,7 +312,7 @@ func datePaths(in string, after1Day bool) ([]string, error) {
 		// 2006/01/02
 		day, err := strconv.Atoi(splitted[2])
 		if err != nil {
-			return []string{}, fmt.Errorf("invalid date format", in)
+			return []string{}, fmt.Errorf("invalid date format: %s", in)
 		}
 		paths = append(paths, fmt.Sprintf("%04d/%02d/%02d", year, months[0], day))
 		a1d = time.Date(year, time.Month(months[0]), day, 0, 0, 0, 0, time.UTC).AddDate(0, 0, 1)
