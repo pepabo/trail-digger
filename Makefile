@@ -36,8 +36,7 @@ prerelease:
 	git pull origin main --tag
 	go mod tidy
 	ghch -w -N ${VER}
-	gocredits -skip-missing -w
-	cat _EXTRA_CREDITS >> CREDITS
+	gocredits -w
 	git add CHANGELOG.md CREDITS go.mod go.sum
 	git commit -m'Bump up version number'
 	git tag ${VER}
