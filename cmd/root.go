@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/pepabo/trail-digger/trail"
+	"github.com/pepabo/trail-digger/version"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -37,9 +38,10 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:          "trail-digger",
-	Short:        "trail-digger",
-	Long:         `trail-digger.`,
+	Short:        "trail-digger is a tool for digging trail log files of AWS CloudTrail",
+	Long:         `trail-digger is a tool for digging trail log files of AWS CloudTrail.`,
 	SilenceUsage: true,
+	Version:      version.Version,
 }
 
 func Execute() {

@@ -1,0 +1,77 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+  -
+    id: trail-digger-darwin
+    ldflags:
+      - -s -w -X github.com/k1LoW/trail-digger.version={{.Version}} -X github.com/k1LoW/trail-digger.commit={{.FullCommit}} -X github.com/k1LoW/trail-digger.date={{.Date}} -X github.com/k1LoW/trail-digger/version.Version={{.Version}}
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+  -
+    id: trail-digger-linux
+    ldflags:
+      - -s -w -X github.com/k1LoW/trail-digger.version={{.Version}} -X github.com/k1LoW/trail-digger.commit={{.FullCommit}} -X github.com/k1LoW/trail-digger.date={{.Date}} -X github.com/k1LoW/trail-digger/version.Version={{.Version}}
+    goos:
+      - linux
+    goarch:
+      - amd64
+archives:
+  -
+    id: trail-digger-archive
+    name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format_overrides:
+      - goos: darwin
+        format: zip
+    files:
+      - CREDITS
+      - README.md
+      - CHANGELOG.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+brews:
+  -
+    name: trail-digger
+    tap:
+      owner: pepabo
+      name: homebrew-tap
+    commit_author:
+      name: 'GMO Pepabo, inc.'
+    homepage: https://github.com/pepabo/trail-digger
+    description: trail-digger is a tool for digging trail log files of AWS CloudTrail.
+    license: MIT
+    install: |
+      bin.install 'trail-digger'
+      output = Utils.safe_popen_read("#{bin}/trail-digger", 'completion', 'bash')
+      (bash_completion/'trail-digger').write output
+      output = Utils.safe_popen_read("#{bin}/trail-digger", 'completion', 'zsh')
+      (zsh_completion/'_trail-digger').write output
+nfpms:
+  -
+    id: trail-digger-nfpms
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    builds:
+      - trail-digger-linux
+    homepage: https://github.com/pepabo/trail-digger
+    maintainer: 'GMO Pepabo, inc.'
+    description: trail-digger is a tool for digging trail log files of AWS CloudTrail.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+    bindir: /usr/bin
+    epoch: 1
