@@ -58,6 +58,8 @@ var eventsCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(eventsCmd)
 	eventsCmd.Flags().StringVarP(&opt.DatePath, "date", "d", time.Now().Format("2006/01/02"), "target date (eg. 2006/01/02, 2006/01, 2006)")
+	eventsCmd.Flags().StringVarP(&opt.StartDatePath, "start-date", "s", "", "start date (eg. 2006/01/02)")
+	eventsCmd.Flags().StringVarP(&opt.EndDatePath, "end-date", "e", "", "end date (eg. 2006/01/02)")
 	eventsCmd.Flags().StringSliceVarP(&opt.Accounts, "account", "a", []string{}, "target account ID")
 	eventsCmd.Flags().StringSliceVarP(&opt.Regions, "region", "r", []string{}, "target region")
 	eventsCmd.Flags().BoolVarP(&opt.AllAccounts, "all-accounts", "A", false, "all accounts")
