@@ -26,6 +26,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -53,7 +54,9 @@ var analyzeCmd = &cobra.Command{
 		regionCount := map[string]int{}
 		recipientAccountIDCount := map[string]int{}
 
+		var mu sync.Mutex
 		if err := trail.WalkEvents(sess, dsn, opt, func(r *trail.Record) error {
+			mu.Lock()
 			if r.ManagementEvent {
 				eventTypeCount["ManagementEvent"] += 1
 			} else {
@@ -62,7 +65,7 @@ var analyzeCmd = &cobra.Command{
 			eventSourceCount[r.EventSource] += 1
 			regionCount[r.AwsRegion] += 1
 			recipientAccountIDCount[r.RecipientAccountID] += 1
-
+			mu.Unlock()
 			return nil
 		}); err != nil {
 			return err

@@ -100,6 +100,21 @@ func WalkEvents(sess *session.Session, dsn string, opt Option, fn WalkEventsFunc
 	var t *string
 	em := map[string]*skipmap.Float64Map{}
 
+	days, err := datePaths(opt, true)
+	if err != nil {
+		return err
+	}
+	st, err := time.Parse("2006/01/02", days[0])
+	if err != nil {
+		return err
+	}
+	et, err := time.Parse("2006/01/02", days[len(days)-1])
+	if err != nil {
+		return err
+	}
+	stn := st.UnixNano()
+	etn := et.UnixNano()
+
 	for _, pd := range prefixes {
 		day := pd.day.Format(datePathFormat)
 		em[day] = skipmap.NewFloat64()
@@ -139,7 +154,8 @@ func WalkEvents(sess *session.Session, dsn string, opt Option, fn WalkEventsFunc
 							}
 							for _, r := range td.Records {
 								tf := r.EventTime.Format(datePathFormat)
-								if !strings.HasPrefix(tf, opt.DatePath) {
+								tn := r.EventTime.UnixNano()
+								if tn < stn || etn < tn {
 									continue
 								}
 								k, err := strconv.ParseFloat(fmt.Sprintf("%d.%d", r.EventTime.Unix(), wyhash.Sum64String(r.EventID)), 64)
