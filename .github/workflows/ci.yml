@@ -24,3 +24,6 @@ jobs:
 
       - name: Run test
         run: make ci
+
+      - name: Run octocov
+        uses: k1LoW/octocov-action@v0
