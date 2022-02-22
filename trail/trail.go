@@ -79,11 +79,13 @@ type Record struct {
 }
 
 type Option struct {
-	DatePath    string
-	Accounts    []string
-	Regions     []string
-	AllAccounts bool
-	AllRegions  bool
+	DatePath      string
+	StartDatePath string
+	EndDatePath   string
+	Accounts      []string
+	Regions       []string
+	AllAccounts   bool
+	AllRegions    bool
 }
 
 type WalkEventsFunc func(r *Record) error
@@ -207,7 +209,7 @@ func generatePrefixes(sess *session.Session, dsn string, opt Option, after1Day b
 	if len(splitted) == 0 || splitted[0] == "" {
 		return "", nil, fmt.Errorf("invalid s3 bucket url: %s", dsn)
 	}
-	days, err := datePaths(opt.DatePath, after1Day)
+	days, err := datePaths(opt, after1Day)
 	if err != nil {
 		return "", nil, err
 	}
@@ -289,30 +291,51 @@ func generatePrefixes(sess *session.Session, dsn string, opt Option, after1Day b
 	return bucket, prefixes, nil
 }
 
-func datePaths(in string, after1Day bool) ([]string, error) {
-	splitted := strings.Split(in, "/")
+func datePaths(opt Option, after1Day bool) ([]string, error) {
+	paths := []string{}
+	if opt.StartDatePath != "" && opt.EndDatePath != "" {
+		st, err := time.Parse("2006/01/02", opt.StartDatePath)
+		if err != nil {
+			return []string{}, fmt.Errorf("invalid start date format: %s", opt.StartDatePath)
+		}
+		et, err := time.Parse("2006/01/02", opt.EndDatePath)
+		if err != nil {
+			return []string{}, fmt.Errorf("invalid end date format: %s", opt.EndDatePath)
+		}
+		dt := et.Sub(st)
+		dd := int(dt.Hours()) / 24
+		if after1Day {
+			dd += 1
+		}
+		for d := 0; d <= dd; d++ {
+			t := st.AddDate(0, 0, d)
+			paths = append(paths, fmt.Sprintf("%04d/%02d/%02d", t.Year(), t.Month(), t.Day()))
+		}
+		return paths, nil
+	}
+
+	splitted := strings.Split(opt.DatePath, "/")
 	if len(splitted) > 3 || splitted[0] == "" {
-		return []string{}, fmt.Errorf("invalid date format: %s", in)
+		return []string{}, fmt.Errorf("invalid date format: %s", opt.DatePath)
 	}
 	year, err := strconv.Atoi(splitted[0])
 	if err != nil {
-		return []string{}, fmt.Errorf("invalid date format: %s", in)
+		return []string{}, fmt.Errorf("invalid date format: %s", opt.DatePath)
 	}
 	months := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
 	if len(splitted) >= 2 {
 		month, err := strconv.Atoi(splitted[1])
 		if err != nil {
-			return []string{}, fmt.Errorf("invalid date format: %s", in)
+			return []string{}, fmt.Errorf("invalid date format: %s", opt.DatePath)
 		}
 		months = []int{month}
 	}
-	paths := []string{}
 	var a1d time.Time
 	if len(splitted) == 3 {
 		// 2006/01/02
 		day, err := strconv.Atoi(splitted[2])
 		if err != nil {
-			return []string{}, fmt.Errorf("invalid date format: %s", in)
+			return []string{}, fmt.Errorf("invalid date format: %s", opt.DatePath)
 		}
 		paths = append(paths, fmt.Sprintf("%04d/%02d/%02d", year, months[0], day))
 		a1d = time.Date(year, time.Month(months[0]), day, 0, 0, 0, 0, time.UTC).AddDate(0, 0, 1)

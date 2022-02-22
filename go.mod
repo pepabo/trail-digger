@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.42.52
 	github.com/docker/go-units v0.4.0
 	github.com/goccy/go-json v0.9.4
+	github.com/google/go-cmp v0.5.6
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v1.3.0

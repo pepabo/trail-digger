@@ -32,8 +32,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/docker/go-units"
-	"github.com/pepabo/trail-digger/trail"
 	"github.com/olekukonko/tablewriter"
+	"github.com/pepabo/trail-digger/trail"
 	"github.com/spf13/cobra"
 )
 
@@ -119,6 +119,8 @@ var sizeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(sizeCmd)
 	sizeCmd.Flags().StringVarP(&opt.DatePath, "date", "d", time.Now().Format("2006/01/02"), "target date (eg. 2006/01/02, 2006/01, 2006)")
+	sizeCmd.Flags().StringVarP(&opt.StartDatePath, "start-date", "s", "", "start date (eg. 2006/01/02)")
+	sizeCmd.Flags().StringVarP(&opt.EndDatePath, "end-date", "e", "", "end date (eg. 2006/01/02)")
 	sizeCmd.Flags().StringSliceVarP(&opt.Accounts, "account", "a", []string{}, "target account ID")
 	sizeCmd.Flags().StringSliceVarP(&opt.Regions, "region", "r", []string{}, "target region")
 	sizeCmd.Flags().BoolVarP(&opt.AllAccounts, "all-accounts", "A", false, "all accounts")
