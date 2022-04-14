@@ -88,3 +88,21 @@ $ AWS_PROFILE=my-profile trail-digger analyze s3://your-trail-log-bucket
 The usage is the same as `trail-digger analyze`, but it outputs the size of trail log S3 objects.
 
 In addition, for `trail-digger events` and `trail-digger analyze`, the aggregation range is determined by `eventTime`, but for `trail-digger size`, the aggregation range is determined by the date path of the S3 bucket.
+
+## Install
+
+**homebrew tap:**
+
+```console
+$ brew install pepabo/tap/trail-digger
+```
+
+**manually:**
+
+Download binany from [releases page](https://github.com/pepabo/trail-digger/releases)
+
+**go install:**
+
+```console
+$ go install github.com/pepabo/trail-digger@latest
+```
