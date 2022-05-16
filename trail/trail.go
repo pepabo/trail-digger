@@ -279,7 +279,7 @@ func generatePrefixes(sess *session.Session, dsn string, opt Option, after1Day b
 			for _, p := range o.CommonPrefixes {
 				regions = append(regions, strings.Trim(strings.Replace(*p.Prefix, prefix, "", -1), "/"))
 			}
-		case len(regions) > 0:
+		case len(opt.Regions) > 0:
 			regions = opt.Regions
 		default:
 			region := *sess.Config.Region
