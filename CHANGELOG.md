@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.2](https://github.com/pepabo/trail-digger/compare/v0.2.1...v0.2.2) (2022-05-16)
+
+* Specifying a region in the argument is not reflected. [#3](https://github.com/pepabo/trail-digger/pull/3) ([rnakamine](https://github.com/rnakamine))
+
 ## [v0.2.1](https://github.com/pepabo/trail-digger/compare/v0.2.0...v0.2.1) (2022-02-22)
 
 * Fix counting events [#2](https://github.com/pepabo/trail-digger/pull/2) ([k1LoW](https://github.com/k1LoW))
