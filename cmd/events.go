@@ -64,4 +64,5 @@ func init() {
 	eventsCmd.Flags().StringSliceVarP(&opt.Regions, "region", "r", []string{}, "target region")
 	eventsCmd.Flags().BoolVarP(&opt.AllAccounts, "all-accounts", "A", false, "all accounts")
 	eventsCmd.Flags().BoolVarP(&opt.AllRegions, "all-regions", "R", false, "all regions")
+	eventsCmd.Flags().StringVarP(&opt.LogFilePrefix, "log-file-prefix", "p", "", "log file prefix")
 }

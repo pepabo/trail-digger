@@ -148,4 +148,5 @@ func init() {
 	analyzeCmd.Flags().StringSliceVarP(&opt.Regions, "region", "r", []string{}, "target region")
 	analyzeCmd.Flags().BoolVarP(&opt.AllAccounts, "all-accounts", "A", false, "all accounts")
 	analyzeCmd.Flags().BoolVarP(&opt.AllRegions, "all-regions", "R", false, "all regions")
+	analyzeCmd.Flags().StringVarP(&opt.LogFilePrefix, "log-file-prefix", "p", "", "log file prefix")
 }
