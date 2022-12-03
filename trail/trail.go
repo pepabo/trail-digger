@@ -86,6 +86,7 @@ type Option struct {
 	Regions       []string
 	AllAccounts   bool
 	AllRegions    bool
+	LogFilePrefix string
 }
 
 type WalkEventsFunc func(r *Record) error
@@ -231,6 +232,9 @@ func generatePrefixes(sess *session.Session, dsn string, opt Option, after1Day b
 	}
 	bucket := splitted[0]
 	prefix := "AWSLogs"
+	if opt.LogFilePrefix != "" {
+		prefix = fmt.Sprintf("%s/%s", opt.LogFilePrefix, prefix)
+	}
 	if len(splitted) > 1 && splitted[1] != "" {
 		prefix = splitted[1]
 	}
